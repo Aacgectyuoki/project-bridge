@@ -54,7 +54,7 @@ const abbreviationMap: Record<string, string> = {
   ELT: "Extract, Load, Transform",
   BI: "Business Intelligence",
   DW: "Data Warehouse",
-  DL: "Data Lake",
+  "Data Lake": "Data Lake",
   OLAP: "Online Analytical Processing",
   OLTP: "Online Transaction Processing",
 
@@ -79,7 +79,7 @@ const abbreviationMap: Record<string, string> = {
   MFA: "Multi-Factor Authentication",
   "2FA": "Two-Factor Authentication",
   SIEM: "Security Information and Event Management",
-  IAM: "Identity and Access Management",
+  // "IAM": "Identity and Access Management",
   GDPR: "General Data Protection Regulation",
   HIPAA: "Health Insurance Portability and Accountability Act",
 

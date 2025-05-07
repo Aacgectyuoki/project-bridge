@@ -1,5 +1,5 @@
-let sessionCreatedInThisInstance = false
-let currentSessionId = null
+let sessionCreatedInThisInstance: boolean = false
+let currentSessionId: string | null = null
 
 // Generate a unique session ID for each analysis
 export function createAnalysisSession(): string {

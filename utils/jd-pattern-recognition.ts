@@ -180,7 +180,7 @@ export async function extractPatternsWithAI(text: string): Promise<SkillPattern[
         step: "AI Pattern Extraction - JSON Parsing",
         duration: 0,
         status: "error",
-        details: { error: e.message, result },
+        details: { error: (e as Error).message, result },
       })
       return []
     }
@@ -190,7 +190,7 @@ export async function extractPatternsWithAI(text: string): Promise<SkillPattern[
       step: "AI Pattern Extraction",
       duration: 0,
       status: "error",
-      details: { error: e.message },
+      details: { error: (e as Error).message },
     })
     return []
   }

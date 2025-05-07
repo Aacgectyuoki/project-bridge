@@ -192,7 +192,7 @@ export function SkillGapProjectSuggestions({ missingSkills }: SkillGapProjectSug
   )
 }
 
-function Clock(props) {
+function Clock(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

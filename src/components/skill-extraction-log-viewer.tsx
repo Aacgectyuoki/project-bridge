@@ -4,8 +4,18 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Badge } from "@/src/components/ui/badge"
 
+interface SkillExtractionLog {
+  timestamp?: string;
+  skills?: {
+    technical?: string[];
+    soft?: string[];
+  };
+  processingTime?: number;
+}
+
 export function SkillExtractionLogViewer({ source = "job-description" }) {
-  const [logs, setLogs] = useState([])
+  // Properly type the logs state
+  const [logs, setLogs] = useState<SkillExtractionLog[]>([])
 
   useEffect(() => {
     // Get logs from localStorage
@@ -49,21 +59,25 @@ export function SkillExtractionLogViewer({ source = "job-description" }) {
               <div>
                 <h4 className="text-sm font-medium mb-1">Technical Skills</h4>
                 <div className="flex flex-wrap gap-1">
-                  {log.skills?.technical?.map((skill, i) => (
-                    <Badge key={i} variant="secondary">
-                      {skill}
-                    </Badge>
-                  )) || "None"}
+                  {log.skills?.technical?.length ? 
+                    log.skills.technical.map((skill: string, i: number) => (
+                      <Badge key={i} variant="secondary">
+                        {skill}
+                      </Badge>
+                    )) 
+                    : "None"}
                 </div>
               </div>
               <div>
                 <h4 className="text-sm font-medium mb-1">Soft Skills</h4>
                 <div className="flex flex-wrap gap-1">
-                  {log.skills?.soft?.map((skill, i) => (
-                    <Badge key={i} variant="secondary">
-                      {skill}
-                    </Badge>
-                  )) || "None"}
+                  {log.skills?.soft?.length ? 
+                    log.skills.soft.map((skill: string, i: number) => (
+                      <Badge key={i} variant="secondary">
+                        {skill}
+                      </Badge>
+                    )) 
+                    : "None"}
                 </div>
               </div>
             </div>

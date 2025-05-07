@@ -133,5 +133,51 @@ export class EnhancedSkillsLogger {
 
     return skillCounts
   }
-  // Add more standardized logging methods
+  
+
+  static logProcessingStep(details: {
+    step: string;
+    duration: number;
+    status: "success" | "error" | "warning";
+    details?: Record<string, any>;
+  }): void {
+    // Log to console
+    console.log(
+      `[PROCESSING-STEP] ${details.step} - Status: ${details.status}, Duration: ${details.duration}ms`,
+      details.details || ""
+    );
+
+    // Store in localStorage
+    try {
+      const timestamp = new Date().toISOString();
+      const logKey = `processing-step-${timestamp}`;
+      
+      const logData = {
+        timestamp,
+        ...details
+      };
+
+      // You could also append to your existing logs if you want to keep everything in one place
+      const existingLogs = localStorage.getItem(this.STORAGE_KEY);
+      let logs = [];
+
+      if (existingLogs) {
+        logs = JSON.parse(existingLogs);
+      }
+
+      logs.push({
+        type: 'processing_step',
+        ...logData
+      });
+
+      // Limit the number of logs
+      if (logs.length > 50) {
+        logs = logs.slice(-50);
+      }
+
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(logs));
+    } catch (error) {
+      console.error("Error saving processing step log:", error);
+    }
+  }
 }

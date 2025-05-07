@@ -7,12 +7,27 @@ import { Button } from "@/src/components/ui/button"
 import { Trash2, RefreshCw } from "lucide-react"
 import { SkillsLogger } from "@/utils/skills-logger"
 
+interface SkillsLog {
+  source: string;
+  timestamp: string;
+  technicalSkills?: string[];
+  softSkills?: string[];
+  requiredSkills?: string[];
+  preferredSkills?: string[];
+  roleFocus?: string;
+}
+
+interface AllSkills {
+  technical: string[];
+  soft: string[];
+}
+
 interface SkillsLogViewerProps {
   inline?: boolean
 }
 
 export function SkillsLogViewer({ inline = false }: SkillsLogViewerProps) {
-  const [logs, setLogs] = useState([])
+  const [logs, setLogs] = useState<SkillsLog[]>([])
   const [isVisible, setIsVisible] = useState(false)
 
   // Add a method to show all unique skills detected
@@ -20,7 +35,7 @@ export function SkillsLogViewer({ inline = false }: SkillsLogViewerProps) {
   const allSkills = SkillsLogger.getAllDetectedSkills()
 
   // Add a safety check for logs
-  const processLogs = (logs) => {
+  const processLogs = (logs: SkillsLog[]): SkillsLog[] => {
     return logs.map((log) => {
       // Ensure all logs have the expected properties
       return {
@@ -130,7 +145,7 @@ export function SkillsLogViewer({ inline = false }: SkillsLogViewerProps) {
             <p className="text-sm text-gray-500 text-center py-4">No skills logs available</p>
           ) : (
             <div className="space-y-4">
-              {logs.map((log, index) => (
+              {logs.map((log: SkillsLog, index: number) => (
                 <div key={index} className="border rounded-md p-3 text-sm">
                   <div className="flex justify-between items-center mb-2">
                     <span className="font-medium">
@@ -144,7 +159,7 @@ export function SkillsLogViewer({ inline = false }: SkillsLogViewerProps) {
                       <div>
                         <h4 className="text-xs font-medium text-gray-500 mb-1">Technical Skills:</h4>
                         <div className="flex flex-wrap gap-1">
-                          {log.technicalSkills.length > 0 ? (
+                        {log.technicalSkills && log.technicalSkills.length > 0 ? (
                             log.technicalSkills.map((skill, i) => (
                               <Badge key={i} variant="secondary" className="bg-blue-100 text-blue-800">
                                 {skill}
@@ -159,7 +174,7 @@ export function SkillsLogViewer({ inline = false }: SkillsLogViewerProps) {
                       <div>
                         <h4 className="text-xs font-medium text-gray-500 mb-1">Soft Skills:</h4>
                         <div className="flex flex-wrap gap-1">
-                          {log.softSkills.length > 0 ? (
+                        {log.softSkills && log.softSkills.length > 0 ? (
                             log.softSkills.map((skill, i) => (
                               <Badge key={i} variant="outline" className="border-green-200 text-green-800">
                                 {skill}

@@ -8,8 +8,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/ta
 import { matchSkills } from "@/utils/skill-matcher"
 import { normalizeSkillName } from "@/utils/skill-abbreviation-resolver"
 
+interface SkillMatchResult {
+  matchPercentage: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+  skillsByCategory: {
+    category: string;
+    matched: string[];
+    missing: string[];
+  }[];
+  partialMatches: {
+    resumeSkill: string;
+    jobSkill: string;
+    similarity: number;
+  }[];
+}
+
 export function SkillMatchDisplay() {
-  const [matchResult, setMatchResult] = useState(null)
+  const [matchResult, setMatchResult] = useState<SkillMatchResult | null>(null);
   const [activeTab, setActiveTab] = useState("overview")
 
   useEffect(() => {

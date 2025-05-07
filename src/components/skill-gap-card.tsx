@@ -2,8 +2,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Badge } from "@/src/components/ui/badge"
 import { AlertTriangle } from "lucide-react"
 
-export function SkillGapCard({ skill }) {
-  const getPriorityColor = (priority) => {
+interface Skill {
+  name: string;
+  level: string;
+  priority: "High" | "Medium" | "Low";
+}
+
+export function SkillGapCard({ skill }: { skill: Skill }) {
+  const getPriorityColor = (priority: "High" | "Medium" | "Low") => {
     switch (priority) {
       case "High":
         return "bg-red-100 text-red-800 border-red-200"

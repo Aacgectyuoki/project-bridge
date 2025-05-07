@@ -5,7 +5,40 @@ import { CheckCircle, XCircle, AlertTriangle, Lightbulb, Clock, ArrowRight } fro
 import { SkillMatchDisplay } from "@/src/components/skill-match-display"
 import type { SkillGapAnalysisResult } from "@/app/actions/analyze-skills-gap"
 
-// Add the import for the new component at the top of the file
+interface Skill {
+  name: string;
+  proficiency?: string;
+  relevance?: string;
+  level?: string;
+  context?: string;
+  priority?: string;
+}
+
+interface Experience {
+  area: string;
+  yearsNeeded: string | number;
+  suggestion: string;
+}
+
+interface Recommendation {
+  type: string;
+  description: string;
+  timeToAcquire: string;
+  priority: string;
+}
+
+interface EnhancedSkillGapAnalysisProps {
+  analysis: {
+    matchPercentage: number;
+    missingSkills: Skill[];
+    missingQualifications: any[]; // Define a proper interface if needed
+    missingExperience: Experience[];
+    matchedSkills: Skill[];
+    recommendations: Recommendation[];
+    summary: string;
+  };
+}
+
 import { SkillGapProjectSuggestions } from "@/src/components/skill-gap-project-suggestions"
 
 interface SkillsGapAnalysisProps {
@@ -270,7 +303,7 @@ export function SkillsGapAnalysis({ analysis }: SkillsGapAnalysisProps) {
 // 2. Detailed explanations for each missing skill
 // 3. Proper formatting with nested lists and emphasis on important points
 
-export function EnhancedSkillGapAnalysis({ analysis }) {
+export function EnhancedSkillGapAnalysis({ analysis }: EnhancedSkillGapAnalysisProps) {
   // Ensure we have valid data with fallbacks
   const safeAnalysis = {
     ...analysis,
@@ -298,7 +331,7 @@ export function EnhancedSkillGapAnalysis({ analysis }) {
                 <li>Required proficiency: {skill.level}</li>
                 <li>{skill.context}</li>
                 <li className="text-red-600 font-medium">
-                  This is a {skill.priority.toLowerCase()} priority skill for this role
+                  This is a {skill.priority?.toLowerCase()} priority skill for this role
                 </li>
               </ul>
             </div>
@@ -317,7 +350,7 @@ export function EnhancedSkillGapAnalysis({ analysis }) {
                 <li>Required proficiency: {skill.level}</li>
                 <li>{skill.context}</li>
                 <li className="text-orange-600 font-medium">
-                  This is a {skill.priority.toLowerCase()} priority skill for this role
+                  This is a {skill.priority?.toLowerCase()} priority skill for this role
                 </li>
               </ul>
             </div>

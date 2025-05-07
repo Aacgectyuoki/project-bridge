@@ -1,3 +1,5 @@
+type AISkillCategory = keyof typeof aiSkillsTaxonomy;
+
 export const aiSkillsTaxonomy = {
   // Core AI/ML concepts
   concepts: [
@@ -140,7 +142,7 @@ export function getRelatedSkills(skill: string, limit = 5): string[] {
   const relatedSkills: string[] = []
 
   categories.forEach((category) => {
-    aiSkillsTaxonomy[category].forEach((s) => {
+    aiSkillsTaxonomy[category as keyof typeof aiSkillsTaxonomy].forEach((s) => {
       if (s.toLowerCase() !== normalizedSkill && !relatedSkills.includes(s)) {
         relatedSkills.push(s)
       }
@@ -175,7 +177,7 @@ export function getSkillConfidence(skill: string, context: string): number {
   // Check if category-related terms are mentioned
   let maxCategoryConfidence = 0
   categories.forEach((category) => {
-    const categoryTerms = aiSkillsTaxonomy[category]
+    const categoryTerms = aiSkillsTaxonomy[category as keyof typeof aiSkillsTaxonomy]
     const mentionedTerms = categoryTerms.filter((term) => normalizedContext.includes(term.toLowerCase()))
 
     if (mentionedTerms.length > 0) {

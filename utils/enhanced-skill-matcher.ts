@@ -68,19 +68,22 @@ export async function enhancedMatchSkills(
 
   const skillsByCategory = await Promise.all(
     categories.map(async (category) => {
-      const categoryJobSkills = jobSkills[category] || []
-      const matched = await findExactMatches(resumeSkills[category] || [], categoryJobSkills)
+      // Use type assertion to safely access dynamic properties
+      const categoryJobSkills = (jobSkills as Record<string, string[]>)[category] || [];
+      const categoryResumeSkills = (resumeSkills as Record<string, string[]>)[category] || [];
+      
+      const matched = await findExactMatches(categoryResumeSkills, categoryJobSkills);
       const missing = categoryJobSkills.filter(
-        (skill) => !matched.some((match) => normalizeSkillName(match) === normalizeSkillName(skill)),
-      )
-
+        (skill: string) => !matched.some((match) => normalizeSkillName(match) === normalizeSkillName(skill)),
+      );
+  
       return {
         category,
         matched,
         missing,
-      }
-    }),
-  )
+      };
+    })
+  );
 
   return {
     matchPercentage,
@@ -112,14 +115,19 @@ async function findExactMatches(resumeSkills: string[], jobSkills: string[]): Pr
 }
 
 async function findAllSemanticMatches(resumeSkills: string[], jobSkills: string[]): Promise<string[]> {
-  let allMatches: string[] = []
+  let allMatches: string[] = [];
 
   for (const resumeSkill of resumeSkills) {
-    const matches = await findSemanticMatches(resumeSkill, jobSkills)
-    allMatches = [...allMatches, ...matches]
+    // Ensure we're dealing with string results only
+    const matches = await findSemanticMatches([resumeSkill], jobSkills);
+    // Extract just the skill names from the matches
+    const matchedSkills = Array.isArray(matches) ? 
+      matches.map(match => typeof match === 'string' ? match : match[0]) : 
+      [];
+    allMatches = [...allMatches, ...matchedSkills];
   }
 
-  return allMatches
+  return allMatches;
 }
 
 async function findAllRelatedMatches(resumeSkills: string[], jobSkills: string[]): Promise<string[]> {

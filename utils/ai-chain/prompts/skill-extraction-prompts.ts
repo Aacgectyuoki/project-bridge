@@ -1,5 +1,15 @@
+interface JobSkillExtractionParams {
+  text: string;
+}
+
+interface JobSkillExtractionChunkParams {
+  text: string;
+  chunkIndex: number;
+  totalChunks: number;
+}
+
 export const jobSkillExtractionPrompt = {
-  format: ({ text }) => `
+  format: ({ text }: JobSkillExtractionParams) => `
 You are an AI assistant specialized in extracting skills from job descriptions.
 
 Job Description:
@@ -30,7 +40,7 @@ Guidelines:
 }
 
 export const jobSkillExtractionChunkPrompt = {
-  format: ({ text, chunkIndex, totalChunks }) => `
+  format: ({ text, chunkIndex, totalChunks }: JobSkillExtractionChunkParams) => `
 You are an AI assistant specialized in extracting skills from job descriptions.
 
 This is chunk ${chunkIndex} of ${totalChunks} from a job description.

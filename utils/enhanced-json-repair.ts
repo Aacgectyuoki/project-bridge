@@ -3,11 +3,15 @@ export function safeParseJSON<T>(text: string, defaultValue: T = {} as T): T {
     // First try direct parsing
     return JSON.parse(text) as T
   } catch (error) {
-    console.error("Initial JSON parse failed:", error.message)
+    if (error instanceof Error) {
+      console.error("Initial JSON parse failed:", error.message)
+    } else {
+      console.error("Initial JSON parse failed with an unknown error")
+    }
 
     // Log the error context for debugging
-    if (error.message.includes("position")) {
-      const positionMatch = error.message.match(/position (\d+)/)
+    if (error instanceof Error && error.message.includes("position")) {
+      const positionMatch = (error as Error).message.match(/position (\d+)/)
       if (positionMatch && positionMatch[1]) {
         const position = Number.parseInt(positionMatch[1])
         const start = Math.max(0, position - 50)
@@ -23,7 +27,11 @@ export function safeParseJSON<T>(text: string, defaultValue: T = {} as T): T {
           console.log("Successfully fixed JSON with position-specific repair")
           return parsed as T
         } catch (positionFixError) {
-          console.error("Position-specific fix failed:", positionFixError.message)
+          if (positionFixError instanceof Error) {
+            console.error("Position-specific fix failed:", positionFixError.message)
+          } else {
+            console.error("Position-specific fix failed with an unknown error")
+          }
           // Continue with other repair strategies
         }
       }
@@ -43,7 +51,11 @@ export function safeParseJSON<T>(text: string, defaultValue: T = {} as T): T {
         console.log("Successfully repaired JSON with standard repair")
         return parsed as T
       } catch (validationError) {
-        console.error("Final JSON validation failed:", validationError.message)
+        if (validationError instanceof Error) {
+          console.error("Final JSON validation failed:", validationError.message)
+        } else {
+          console.error("Final JSON validation failed with an unknown error")
+        }
 
         // Try more aggressive repair if standard repair fails
         try {
@@ -52,7 +64,11 @@ export function safeParseJSON<T>(text: string, defaultValue: T = {} as T): T {
           console.log("Successfully repaired JSON with aggressive repair")
           return parsed as T
         } catch (finalError) {
-          console.error("Aggressive JSON repair failed:", finalError.message)
+          if (finalError instanceof Error) {
+            console.error("Aggressive JSON repair failed:", finalError.message)
+          } else {
+            console.error("Aggressive JSON repair failed with an unknown error")
+          }
 
           // Last resort: try to extract a partial valid JSON
           try {
@@ -62,14 +78,22 @@ export function safeParseJSON<T>(text: string, defaultValue: T = {} as T): T {
               return partialJSON as T
             }
           } catch (extractError) {
-            console.error("Partial JSON extraction failed:", extractError.message)
+            if (extractError instanceof Error) {
+              console.error("Partial JSON extraction failed:", extractError.message)
+            } else {
+              console.error("Partial JSON extraction failed with an unknown error")
+            }
           }
 
           return defaultValue
         }
       }
     } catch (repairError) {
-      console.error("JSON repair failed:", repairError.message)
+      if (repairError instanceof Error) {
+        console.error("JSON repair failed:", repairError.message)
+      } else {
+        console.error("JSON repair failed with an unknown error")
+      }
       return defaultValue
     }
   }

@@ -36,18 +36,31 @@ export function estimateSkillProficiency(resumeAnalysis: ResumeAnalysisResult, s
         recency: determineRecency(project.date),
       }))
 
+      function parseDateFromExperience(exp: { duration: string }): { startDate: string, endDate: string } {
+        // Assuming duration format like "Jan 2020 - Present" or "2018-2021"
+        const durationParts = exp.duration.split('-').map(p => p.trim());
+        
+        return {
+          startDate: durationParts[0] || '',
+          endDate: durationParts.length > 1 ? durationParts[1] : 'Present'
+        };
+      }
+
     // Find evidence in work experience
     const experienceEvidence = (resumeAnalysis.experience || [])
-      .filter(
-        (exp) =>
-          exp.description.toLowerCase().includes(normalizedSkill) || exp.title.toLowerCase().includes(normalizedSkill),
-      )
-      .map((exp) => ({
-        type: "experience" as const,
-        description: exp.title,
-        duration: calculateDuration(exp.startDate, exp.endDate),
-        recency: determineRecency(exp.endDate),
-      }))
+  .filter(
+    (exp) =>
+      exp.description.toLowerCase().includes(normalizedSkill) || exp.title.toLowerCase().includes(normalizedSkill),
+  )
+  .map((exp) => {
+    const { startDate, endDate } = parseDateFromExperience(exp);
+    return {
+      type: "experience" as const,
+      description: exp.title,
+      duration: calculateDuration(startDate, endDate),
+      recency: determineRecency(endDate),
+    };
+  });
 
     // Combine all evidence
     const allEvidence = [...projectEvidence, ...experienceEvidence]

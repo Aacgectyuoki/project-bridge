@@ -6,10 +6,14 @@ import { Label } from "@/src/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/src/components/ui/radio-group"
 import { SkillsLogger } from "@/utils/skills-logger"
 
-export function RoleFocusSelect({ onSubmit }) {
+interface RoleFocusSelectProps {
+  onSubmit: (selectedFocus: string) => void;
+}
+
+export function RoleFocusSelect({ onSubmit }: RoleFocusSelectProps) {
   const [selectedFocus, setSelectedFocus] = useState("")
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (selectedFocus) {
       // Log the selected role focus

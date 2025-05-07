@@ -6,10 +6,56 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/ta
 import { Badge } from "@/src/components/ui/badge"
 import { Progress } from "@/src/components/ui/progress"
 import { Brain, CheckCircle2, Lightbulb, TrendingUp, Server, Zap } from "lucide-react"
-import type { EnhancedSkillAnalysisResult } from "@/utils/enhanced-skill-analysis"
+// import type { EnhancedSkillAnalysisResult } from "@/utils/enhanced-skill-analysis"
+
+export interface SemanticMatch {
+  resumeSkill: string;
+  jobSkill: string;
+  similarity: number;
+  relationship: string;
+  isIndirect?: boolean; // Optional property to indicate indirect matches
+}
 
 interface EnhancedSkillAnalysisDisplayProps {
   analysis: EnhancedSkillAnalysisResult | null
+}
+
+interface EnhancedSkillAnalysisResult {
+  originalMatchPercentage: number;
+  enhancedMatchPercentage: number;
+  improvementReason: string;
+  semanticMatches: {
+    exactMatches: string[];
+    semanticMatches: SemanticMatch[];
+    missingSkills: string[];
+  };
+  proficiencyLevels: {
+    skill: string;
+    level: string;
+    confidence: number;
+    evidence: {
+      type: string;
+      description: string;
+      duration?: string;
+      recency?: string;
+    }[];
+  }[];
+  inferredSkills: {
+    skill: string;
+    category: string;
+    confidence: number;
+    inferredFrom: {
+      skillCombination: string[];
+      context: string;
+    };
+  }[];
+  infrastructurePatterns: {
+    name: string;
+    description: string;
+    confidence: number;
+    matchedSkills: string[];
+    inferredCapabilities: string[];
+  }[];
 }
 
 export function EnhancedSkillAnalysisDisplay({ analysis }: EnhancedSkillAnalysisDisplayProps) {
@@ -111,7 +157,7 @@ export function EnhancedSkillAnalysisDisplay({ analysis }: EnhancedSkillAnalysis
                         <div
                           key={index}
                           className={`flex justify-between items-center p-2 rounded-md ${
-                            match.isIndirect ? "bg-purple-50 border border-purple-100" : "bg-blue-50"
+                            "bg-blue-50"
                           }`}
                         >
                           <div className="flex items-center gap-2">

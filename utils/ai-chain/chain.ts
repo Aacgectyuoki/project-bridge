@@ -53,7 +53,11 @@ export class Chain<T = any> {
       } catch (error) {
         const stepDuration = performance.now() - stepStartTime
         console.error(`Chain: Step "${name}" failed after ${stepDuration.toFixed(2)}ms:`, error)
-        throw new Error(`Chain step "${name}" failed: ${error.message}`)
+        if (error instanceof Error) {
+          throw new Error(`Chain step "${name}" failed: ${error.message}`)
+        } else {
+          throw new Error(`Chain step "${name}" failed with an unknown error`)
+        }
       }
     }
 

@@ -1,4 +1,4 @@
-import type { ExtractedSkills } from "@/app/actions/extract-skills"
+import type { ExtractedSkills as ImportedExtractedSkills } from "@/app/actions/extract-skills"
 import { findMatchingSkills, normalizeSkillName } from "./skill-abbreviation-resolver"
 
 export type SkillMatchResult = {
@@ -17,10 +17,22 @@ export type SkillMatchResult = {
   }[]
 }
 
+export interface LocalExtractedSkills {
+  technical: string[];
+  tools: string[];
+  frameworks: string[];
+  languages: string[];
+  databases: string[];
+  methodologies: string[];
+  platforms: string[];
+  other: string[];
+  [key: string]: string[]; // Add index signature
+}
+
 /**
  * Flattens an ExtractedSkills object into a single array of skills
  */
-export function flattenSkills(skills: ExtractedSkills): string[] {
+export function flattenSkills(skills: LocalExtractedSkills): string[] {
   return [
     ...skills.technical,
     ...skills.tools,
@@ -107,7 +119,7 @@ function findPartialMatches(
 /**
  * Compares resume skills with job description skills
  */
-export function matchSkills(resumeSkills: ExtractedSkills, jobSkills: ExtractedSkills): SkillMatchResult {
+export function matchSkills(resumeSkills: LocalExtractedSkills, jobSkills: LocalExtractedSkills): SkillMatchResult {
   // Flatten all skills
   const allResumeSkills = flattenSkills(resumeSkills)
   const allJobSkills = flattenSkills(jobSkills)
@@ -142,19 +154,22 @@ export function matchSkills(resumeSkills: ExtractedSkills, jobSkills: ExtractedS
 
   const skillsByCategory = categories
     .map((category) => {
-      const categoryJobSkills = jobSkills[category] || []
-      const matched = findMatchingSkills(resumeSkills[category] || [], categoryJobSkills)
+      // Use type assertion to tell TypeScript these are valid keys
+      const categoryJobSkills = (jobSkills as Record<string, string[]>)[category] || [];
+      const categoryResumeSkills = (resumeSkills as Record<string, string[]>)[category] || [];
+      
+      const matched = findMatchingSkills(categoryResumeSkills, categoryJobSkills);
       const missing = categoryJobSkills.filter(
-        (skill) => !matched.some((match) => match.toLowerCase() === normalizeSkillName(skill).toLowerCase()),
-      )
+        (skill: string) => !matched.some((match) => match.toLowerCase() === normalizeSkillName(skill).toLowerCase()),
+      );
 
       return {
         category,
         matched,
         missing,
-      }
+      };
     })
-    .filter((category) => category.matched.length > 0 || category.missing.length > 0)
+    .filter((category) => category.matched.length > 0 || category.missing.length > 0);
 
   return {
     matchPercentage,

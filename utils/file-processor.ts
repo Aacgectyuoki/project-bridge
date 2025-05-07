@@ -97,7 +97,11 @@ export async function extractTextFromFile(file: File, onProgress?: (progress: nu
     return cleanedText
   } catch (error) {
     console.error("Error extracting text from file:", error)
-    throw new Error(`Failed to extract text from ${file.name}: ${error.message}`)
+    if (error instanceof Error) {
+      throw new Error(`Failed to extract text from ${file.name}: ${error.message}`)
+    } else {
+      throw new Error(`Failed to extract text from ${file.name}: Unknown error`)
+    }
   }
 }
 

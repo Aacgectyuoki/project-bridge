@@ -1,4 +1,4 @@
-export const skillContextMap = {
+export const skillContextMap: Record<string, string> = {
   LLMs: "Large Language Models are fundamental to modern AI engineering, enabling natural language understanding and generation capabilities.",
   "RAG systems":
     "Retrieval Augmented Generation systems combine the power of LLMs with knowledge retrieval, essential for building AI systems with accurate information access.",

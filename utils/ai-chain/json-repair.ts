@@ -119,7 +119,11 @@ export function safeJSONParse(text: string): any {
     // First try direct parsing
     return JSON.parse(text)
   } catch (error) {
-    console.error("Initial JSON parse failed in safeJSONParse:", error.message)
+    if (error instanceof Error) {
+      console.error("Initial JSON parse failed in safeJSONParse:", error.message)
+    } else {
+      console.error("Initial JSON parse failed in safeJSONParse with an unknown error")
+    }
 
     // Use our enhanced safeParseJSON function
     return safeParseJSON(text, {})
@@ -173,7 +177,17 @@ export function manualExtraction(text: string, schema: string): any {
   console.log(`Attempting manual extraction for schema: ${schema}`)
 
   if (schema === "skills") {
-    const result = {
+    const result: {
+      technical: string[];
+      soft: string[];
+      tools: string[];
+      frameworks: string[];
+      languages: string[];
+      databases: string[];
+      methodologies: string[];
+      platforms: string[];
+      other: string[];
+    } = {
       technical: [],
       soft: [],
       tools: [],
